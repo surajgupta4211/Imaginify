@@ -57,8 +57,8 @@ const Page = () => {
     <div className="flex justify-center items-center min-h-screen bg-slate-900">
       <div className="w-full max-w-md p-8 space-y-8 bg-gray-800 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">Join PixVid.ai</h1>
-          <p className="mb-4">Sign up to enter PixVid.ai</p>
+          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">IMAGINIFY</h1>
+          <p className="mb-4">Sign up to enter IMAGINIFY</p>
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
