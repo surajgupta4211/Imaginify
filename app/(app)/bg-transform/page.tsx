@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CldImage } from "next-cloudinary";
 import { ImageData } from "@/types";
-import { RefreshCcw } from "lucide-react"
+import { RefreshCcw } from "lucide-react";
 
 const BgRemove = () => {
   const [uploadedImage, setUploadedImage] = useState<ImageData | null>(null);
@@ -11,8 +11,10 @@ const BgRemove = () => {
   const [isTransforming, setIsTransforming] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [prompt, setPrompt] = useState("");
-  const imageRef = useRef<HTMLImageElement>(null);
   const [seed, setSeed] = useState<number>(1);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (uploadedImage) {
@@ -21,13 +23,23 @@ const BgRemove = () => {
     }
   }, [uploadedImage]);
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    // setPrompt("")
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    setErrorMessage(null); // Clear previous error
 
-    if (!file) {
+    if (!file) return;
+
+    // ✅ Validate type
+    const validTypes = ["image/jpeg", "image/png"];
+    if (!validTypes.includes(file.type)) {
+      setErrorMessage("❌ Only JPEG and PNG files are allowed.");
+      return;
+    }
+
+    // ✅ Validate size
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_SIZE) {
+      setErrorMessage("File size too large. Max allowed size is 10MB.");
       return;
     }
 
@@ -43,26 +55,25 @@ const BgRemove = () => {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to upload image");
+        setErrorMessage("❌ Upload failed.");
+        return;
       }
 
       const data = await res.json();
-      console.log(data)
       setUploadedImage(data.data);
     } catch (error) {
-      console.log(error);
-      alert("Failed to upload image");
+      console.error(error);
+      setErrorMessage("❌ Something went wrong while uploading.");
     } finally {
-        setIsUploading(false);
+      setIsUploading(false);
     }
   };
 
   const seedRandomizer = () => {
-    setIsGenerating(true)
-    const num = (seed+1 + Math.floor(Math.random()*10))%10
-    console.log(num)
-    setSeed(num)
-  }
+    setIsGenerating(true);
+    const num = (seed + 1 + Math.floor(Math.random() * 10)) % 10;
+    setSeed(num);
+  };
 
   const handleDownload = () => {
     if (!imageRef.current) return;
@@ -91,22 +102,28 @@ const BgRemove = () => {
         <div className="card-body">
           <h2 className="card-title mb-4">Upload an Image</h2>
           <div className="form-control">
-            <label className="label">
-              <span className="label-text">Choose an image file</span>
-            </label>
             <input
               type="file"
               onChange={handleFileUpload}
               className="file-input file-input-bordered file-input-primary w-full"
             />
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+            )}
+
             <label className="form-control w-full mt-4">
-                <div className="label">
-                    <span className="label-text">Enter your Prompt</span>
-                </div>
-                <div className="flex flex-col md:flex-row gap-4">
-                  <input type="text" placeholder="Enter prompt to see result" onChange={(e)=>{ setIsGenerating(true)
-                     setPrompt(e.target.value)}} className="input input-bordered w-full" />
-                </div>
+              <div className="label">
+                <span className="label-text">Enter your Prompt</span>
+              </div>
+              <input
+                type="text"
+                placeholder="e.g. beach, sunset, etc."
+                onChange={(e) => {
+                  setIsGenerating(true);
+                  setPrompt(e.target.value);
+                }}
+                className="input input-bordered w-full"
+              />
             </label>
           </div>
 
@@ -118,59 +135,54 @@ const BgRemove = () => {
 
           {uploadedImage && (
             <div className="mt-6">
-              
-              <div className="flex flex-col md:flex-row ">
+              <div className="flex flex-col md:flex-row">
+                {/* Preview */}
                 <div className="mt-6 relative md:mr-2 w-full md:w-1/2">
-                    <h3 className="text-lg font-semibold mb-2">Preview:</h3>
-                    <div className="flex justify-center">
+                  <h3 className="text-lg font-semibold mb-2">Preview:</h3>
+                  <div className="flex justify-center">
                     {isTransforming && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-50 z-10">
+                      <div className="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-50 z-10">
                         <span className="loading loading-spinner loading-lg"></span>
-                        </div>
+                      </div>
                     )}
                     <CldImage
-                        width= {uploadedImage.width}
-                        height= {uploadedImage.height}
-                        src={uploadedImage.public_id}
-                        sizes="100vw"
-                        alt="transformed image"
-                        crop="fill"
-                        aspectRatio= "1:1"
-                        gravity="auto"
-                        ref={imageRef}
-                        onLoad={() => setIsTransforming(false)}
-                        // removeBackground
-                        // replaceBackground="beach with volcano"
-                        // replace={['phone', 'soda can']}
+                      width={uploadedImage.width}
+                      height={uploadedImage.height}
+                      src={uploadedImage.public_id}
+                      sizes="100vw"
+                      alt="Original image"
+                      crop="fill"
+                      aspectRatio="1:1"
+                      gravity="auto"
+                      ref={imageRef}
+                      onLoad={() => setIsTransforming(false)}
                     />
-                    </div>
+                  </div>
                 </div>
 
+                {/* Transformed */}
                 <div className="mt-6 relative md:ml-2 w-full md:w-1/2">
-                    <h3 className="text-lg font-semibold mb-2">Result:</h3>
-                    <div className="flex justify-center">
+                  <h3 className="text-lg font-semibold mb-2">Transformed:</h3>
+                  <div className="flex justify-center">
                     {isGenerating && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-50 z-10">
+                      <div className="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-50 z-10">
                         <span className="loading loading-spinner loading-lg"></span>
-                        </div>
+                      </div>
                     )}
                     <CldImage
-                        width= {uploadedImage.width}
-                        height= {uploadedImage.height}
-                        src={uploadedImage.public_id}
-                        sizes="100vw"
-                        alt="transformed image"
-                        crop="fill"
-                        aspectRatio= "1:1"
-                        gravity="auto"
-                        ref={imageRef}
-                        onLoad={() => setIsGenerating(false)}
-                        // removeBackground
-                        replaceBackground={{prompt: prompt, seed: seed}}
-                        // seed=3
-                        // replace={['phone', 'soda can']}
+                      width={uploadedImage.width}
+                      height={uploadedImage.height}
+                      src={uploadedImage.public_id}
+                      sizes="100vw"
+                      alt="Transformed image"
+                      crop="fill"
+                      aspectRatio="1:1"
+                      gravity="auto"
+                      ref={imageRef}
+                      onLoad={() => setIsGenerating(false)}
+                      replaceBackground={{ prompt, seed }}
                     />
-                    </div>
+                  </div>
                 </div>
               </div>
 

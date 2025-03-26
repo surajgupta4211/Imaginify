@@ -32,7 +32,7 @@ const Page = () => {
 
         toast({
             title: "Account created",
-            description: "Sign in to use PixVid.ai",
+            description: "Sign in to use IMAGINIFY",
             variant: "default"
         })
 

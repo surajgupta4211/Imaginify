@@ -16,11 +16,10 @@ type SocialFormat = keyof typeof socialFormats;
 
 const SocialShare = () => {
   const [uploadedImage, setUploadedImage] = useState<ImageData | null>(null);
-  const [selectedFormat, setSelectedFormat] = useState<SocialFormat>(
-    "Instagram Square (1:1)"
-  );
+  const [selectedFormat, setSelectedFormat] = useState<SocialFormat>("Instagram Square (1:1)");
   const [isUploading, setIsUploading] = useState(false);
   const [isTransforming, setIsTransforming] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -29,17 +28,25 @@ const SocialShare = () => {
     }
   }, [selectedFormat, uploadedImage]);
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    setErrorMessage(null);
 
-    if (!file) {
+    if (!file) return;
+
+    const validTypes = ["image/jpeg", "image/png"];
+    if (!validTypes.includes(file.type)) {
+      setErrorMessage("❌ Only JPEG and PNG files are allowed.");
+      return;
+    }
+
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_SIZE) {
+      setErrorMessage("File size too large. Max allowed size is 10MB.");
       return;
     }
 
     setIsUploading(true);
-
     const formData = new FormData();
     formData.append("file", file);
 
@@ -49,15 +56,13 @@ const SocialShare = () => {
         body: formData,
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to upload image");
-      }
+      if (!res.ok) throw new Error("Upload failed");
 
       const data = await res.json();
       setUploadedImage(data.data);
     } catch (error) {
-      console.log(error);
-      alert("Failed to upload image");
+      console.error(error);
+      setErrorMessage("❌ Upload failed. Try again.");
     } finally {
       setIsUploading(false);
     }
@@ -72,9 +77,7 @@ const SocialShare = () => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `${selectedFormat
-          .replace(/\s+/g, "_")
-          .toLowerCase()}.png`;
+        link.download = `${selectedFormat.replace(/\s+/g, "_").toLowerCase()}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -84,9 +87,7 @@ const SocialShare = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Social Media Image Creator
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Social Media Image Creator</h1>
 
       <div className="card">
         <div className="card-body">
@@ -100,6 +101,9 @@ const SocialShare = () => {
               onChange={handleFileUpload}
               className="file-input file-input-bordered file-input-primary w-full"
             />
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+            )}
           </div>
 
           {isUploading && (
@@ -146,9 +150,6 @@ const SocialShare = () => {
                     gravity="auto"
                     ref={imageRef}
                     onLoad={() => setIsTransforming(false)}
-                    // removeBackground
-                    // replaceBackground="beach with volcano"
-                    // replace={['phone', 'soda can']}
                   />
                 </div>
               </div>

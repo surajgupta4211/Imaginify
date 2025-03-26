@@ -25,7 +25,7 @@ export default function FaceDetectionPage() {
         try {
             const response = await fetch("/api/face-detection", {
                 method: "POST",
-                body: formData
+                body: formData,
             });
 
             const data = await response.json();
@@ -70,7 +70,7 @@ export default function FaceDetectionPage() {
             <div className="card bg-base-200 shadow-lg p-6">
                 <div className="card-body">
                     <h2 className="card-title mb-4">Upload an Image</h2>
-                    <input 
+                    <input
                         type="file"
                         className="file-input file-input-bordered w-full mb-4"
                         onChange={handleFileChange}

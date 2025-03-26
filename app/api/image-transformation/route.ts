@@ -1,21 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
-// import { auth } from "@clerk/nextjs/server";
 
 // Cloudinary Configuration
 cloudinary.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 export async function POST(request: NextRequest) {
-    // // const { userId } = auth();
-
-    // if (!userId) {
-    //     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
-
     try {
         const formData = await request.formData();
         const file = formData.get("file") as File | null;
@@ -31,8 +24,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Invalid file format. Only JPEG and PNG are allowed." }, { status: 400 });
         }
 
-        // ✅ Check file size (Max 5MB)
-        const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+        // ✅ Check file size (Max 10MB)
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
         if (file.size > MAX_FILE_SIZE) {
             return NextResponse.json({ error: "File size too large. Max allowed size is 5MB." }, { status: 400 });
         }
@@ -61,7 +54,10 @@ export async function POST(request: NextRequest) {
         // ✅ Apply Transformations
         const transformedUrl = cloudinary.url(public_id, {
             secure: true,
-            transformation: transformations
+            transformation: transformations.map((transform: { effect: string, value?: number }) => ({
+                effect: transform.effect,
+                ...(transform.value && { value: transform.value })
+            }))
         });
 
         console.log("Original Image:", secure_url);

@@ -5,9 +5,10 @@ import React, { useState } from "react";
 const transformationsList = [
     { label: "Grayscale", value: [{ effect: "grayscale" }] },
     { label: "Sepia", value: [{ effect: "sepia" }] },
-    { label: "Blur", value: [{ effect: "blur:200" }] },
-    { label: "Pixelate", value: [{ effect: "pixelate:10" }] },
-    { label: "Auto Enhance", value: [{ effect: "auto_enhance" }] }
+    { label: "Brightness", value: [{ effect: "brightness", value: 50 }] },
+    { label: "Contrast", value: [{ effect: "contrast", value: 50 }] },
+    { label: "Saturation", value: [{ effect: "saturation", value: 50 }] },
+    { label: "Vignette", value: [{ effect: "vignette", value: 50 }] }
 ];
 
 export default function ImageTransformationPage() {
@@ -30,10 +31,10 @@ export default function ImageTransformationPage() {
                 return;
             }
 
-            // ✅ Validate file size (Max 5MB)
-            const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+            // ✅ Validate file size (Max 10MB)
+            const MAX_FILE_SIZE = 10 * 1024 * 1024; // 5MB
             if (file.size > MAX_FILE_SIZE) {
-                setErrorMessage("File size too large! Maximum allowed size is 5MB.");
+                setErrorMessage("File size too large! Maximum allowed size is 10MB.");
                 setSelectedFile(null);
                 return;
             }

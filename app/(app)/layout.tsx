@@ -27,7 +27,7 @@ const sidebarItems = [
   { href: "/social-share", icon: Share2Icon, label: "Social Share" },
   { href: "/video-upload", icon: UploadIcon, label: "Video Upload" },
   { href: "/enhance-image", icon: WandSparkles, label: "Enhance Image" },
-  { href: "/bg-remove", icon: Images, label: "BG Remove" },
+  // { href: "/bg-remove", icon: Images, label: "BG Remove" },
   { href: "/bg-transform", icon: Replace, label: "BG Transform" },
   { href: "/item-replace", icon: Dna, label: "Item Replace" },
   { href: "/image-compression", icon: ShrinkIcon, label: "Image Compression" },

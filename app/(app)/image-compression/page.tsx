@@ -9,10 +9,30 @@ export default function ImageCompressionPage() {
   const [originalSize, setOriginalSize] = useState<number | null>(null);
   const [compressedSize, setCompressedSize] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
+      const file = event.target.files[0];
+
+      // Validate file type (Only allow JPEG & PNG)
+      const validMimeTypes = ["image/jpeg", "image/png"];
+      if (!validMimeTypes.includes(file.type)) {
+        setErrorMessage("Invalid file format. Only JPEG and PNG are allowed.");
+        setSelectedFile(null);
+        return;
+      }
+
+      // Validate file size (Max 10MB)
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+      if (file.size > MAX_FILE_SIZE) {
+        setErrorMessage("File size too large. Max size is 10MB.");
+        setSelectedFile(null);
+        return;
+      }
+
+      setErrorMessage(null);
+      setSelectedFile(file);
     }
   };
 
@@ -75,6 +95,9 @@ export default function ImageCompressionPage() {
             className="file-input file-input-bordered w-full mb-4"
             onChange={handleFileChange}
           />
+          {errorMessage && (
+            <div className="text-red-500 mb-4">{errorMessage}</div>
+          )}
 
           <button className="btn btn-primary w-full" onClick={handleCompress} disabled={loading}>
             {loading ? "Compressing..." : "Compress Image"}
