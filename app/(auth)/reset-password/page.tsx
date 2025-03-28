@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label"
 import axios from "axios"
 
 const Page = () => {
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("")
@@ -20,38 +19,63 @@ const Page = () => {
   const { toast } = useToast();
   const router = useRouter();
 
-  const onSubmit = async ()=>{
-    try {
-        setIsSubmitting(true)
-        const data = {
-            email: email.toLowerCase(),
-            username: username.toLowerCase(),
-            password
-        }
-        const res = await axios.post("/api/reset-password", data)
-        console.log(res)
+  // ✅ Password strength validator
+  const isStrongPassword = (pass: string) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,25}$/;
+    return regex.test(pass);
+  };
 
-        toast({
-            title: "Password Reset Successfully",
-            description: "Use new password to signin",
-            variant: "default"
-        })
-
-        if(res.data){
-            router.replace("/signin")
-        }
-    
-    } catch (error: any) {
-        console.log(error.response.data)
-        toast({
-            title: "Login Failed",
-            description: `${error.response.data.message}`,
-            variant: "destructive"
-        })
-    } finally {
-        setIsSubmitting(false)
+  const onSubmit = async () => {
+    // ✅ Validate before hitting API
+    if (!email || !username || !password) {
+      toast({
+        title: "Missing Fields",
+        description: "All fields are required",
+        variant: "destructive"
+      });
+      return;
     }
-  }
+
+    if (!isStrongPassword(password)) {
+      toast({
+        title: "Weak Password",
+        description: "Password must include uppercase, lowercase, numbers, and special characters",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const data = {
+        email: email.toLowerCase(),
+        username: username.toLowerCase(),
+        password,
+      };
+
+      const res = await axios.post("/api/reset-password", data);
+
+      toast({
+        title: "Password Reset Successfully",
+        description: "Use new password to sign in",
+        variant: "default"
+      });
+
+      if (res.data) {
+        router.replace("/signin");
+      }
+    } catch (error: any) {
+      console.log(error.response?.data);
+      toast({
+        title: "Reset Failed",
+        description: error.response?.data?.message || "Something went wrong",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-slate-900">
@@ -62,26 +86,22 @@ const Page = () => {
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="email">Email :</Label>
-            <Input type="email" id="email" placeholder="@email" onChange={(e)=>setEmail(e.target.value)} />
+          <Label htmlFor="email">Email :</Label>
+          <Input type="email" id="email" placeholder="@email" onChange={(e) => setEmail(e.target.value)} />
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="username">Username :</Label>
-            <Input type="text" id="username" placeholder="Username" onChange={(e)=>setUsername(e.target.value)} />
+          <Label htmlFor="username">Username :</Label>
+          <Input type="text" id="username" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="password">New password :</Label>
-            <Input type="password" id="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
+          <Label htmlFor="password">New password :</Label>
+          <Input type="password" id="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
         </div>
 
         <Button disabled={isSubmitting} onClick={onSubmit}>
-            {
-                isSubmitting ? <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                </> : ("Reset password")
-            }
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Reset password"}
         </Button>
 
         <div className="text-center mt-4">
@@ -91,9 +111,9 @@ const Page = () => {
           </p>
         </div>
       </div>
-      
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;
+
