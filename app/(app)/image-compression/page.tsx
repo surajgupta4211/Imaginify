@@ -90,6 +90,7 @@ export default function ImageCompressionPage() {
       <div className="card bg-base-200 shadow-lg p-6">
         <div className="card-body">
           <h2 className="card-title mb-4">Upload an Image</h2>
+          <h3 className="label-text">(File Size Limit: 10MB , Allowed File Types: JPEG, PNG )</h3>
           <input
             type="file"
             className="file-input file-input-bordered w-full mb-4"

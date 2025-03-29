@@ -89,14 +89,14 @@ const BgRemove = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Item Replace</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Image Object Replace</h1>
 
       <div className="card">
         <div className="card-body">
           <h2 className="card-title mb-4">Upload an Image</h2>
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Choose an image file</span>
+              <span className="label-text">Choose an image file (File Size Limit: 10MB , Allowed File Types: JPEG, PNG )</span>
             </label>
             <input
               type="file"

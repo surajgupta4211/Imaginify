@@ -109,13 +109,13 @@ const Page = () => {
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="email">Email :</Label>
-          <Input type="email" id="email" placeholder="@email" onChange={(e) => setEmail(e.target.value)} />
+          <Input type="email" id="email" placeholder="@email (Must Be Unique)" onChange={(e) => setEmail(e.target.value)} />
           {emailError && <div className="text-red-500 text-sm">{emailError}</div>}
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="username">Username :</Label>
-          <Input type="text" id="username" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
+          <Input type="text" id="username" placeholder="Username (only contain letters,numbers)" onChange={(e) => setUsername(e.target.value)} />
           {usernameError && <div className="text-red-500 text-sm">{usernameError}</div>}
         </div>
 
@@ -124,7 +124,7 @@ const Page = () => {
           <Input
             type="password"
             id="password"
-            placeholder="Password"
+            placeholder="Password (uppercase,lowercase,numbers,special characters)"
             onChange={(e) => setPassword(e.target.value)}
           />
           {passwordError && <div className="text-red-500 text-sm">{passwordError}</div>}

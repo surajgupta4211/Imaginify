@@ -23,16 +23,16 @@ import UserContext from "@/context/UserContext";
 import { useToast } from "@/hooks/use-toast";
 
 const sidebarItems = [
-  { href: "/home", icon: Clapperboard, label: "Videos" },
-  { href: "/social-share", icon: Share2Icon, label: "Social Share" },
-  { href: "/video-upload", icon: UploadIcon, label: "Video Upload" },
-  { href: "/enhance-image", icon: WandSparkles, label: "Enhance Image" },
-  // { href: "/bg-remove", icon: Images, label: "BG Remove" },
-  { href: "/bg-transform", icon: Replace, label: "BG Transform" },
-  { href: "/item-replace", icon: Dna, label: "Item Replace" },
+  { href: "/home", icon: Clapperboard, label: "Videos Gallery" },
+  { href: "/video-upload", icon: UploadIcon, label: "Video Compression" },
   { href: "/image-compression", icon: ShrinkIcon, label: "Image Compression" },
+  { href: "/bg-transform", icon: Replace, label: "Image BackGround Transform" },
+  { href: "/item-replace", icon: Dna, label: "Image Object Replace" },
+  { href: "/enhance-image", icon: WandSparkles, label: "AI Image Enhancer" },
+  { href: "/social-share", icon: Share2Icon, label: "Social Media Image Creator" },
   { href: "/image-transformation", icon: ImageIcon, label: "Image Transformation" },
-  { href: "/face-detection", icon: UserIcon, label: "Face Detection" }, // 🔥 Face Detection Feature
+  // { href: "/bg-remove", icon: Images, label: "BG Remove" },
+  { href: "/face-detection", icon: UserIcon, label: "AI-Powered Face Detection" }, // 🔥 Face Detection Feature
 
 ];
 
@@ -92,7 +92,7 @@ export default function AppLayout({
             <div className="flex-1">
               <Link href="/" onClick={handleLogoClick}>
                 <div className="btn btn-ghost normal-case text-2xl font-bold tracking-tight cursor-pointer">
-                  {/* PixVid.ai */}
+                  {/* Suraj Gupta */}
                   cloudinary showcase
                 </div>
               </Link>

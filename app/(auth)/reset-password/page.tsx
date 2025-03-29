@@ -87,17 +87,17 @@ const Page = () => {
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="email">Email :</Label>
-          <Input type="email" id="email" placeholder="@email" onChange={(e) => setEmail(e.target.value)} />
+          <Input type="email" id="email" placeholder="@email (Must Be Unique)" onChange={(e) => setEmail(e.target.value)} />
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="username">Username :</Label>
-          <Input type="text" id="username" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
+          <Input type="text" id="username" placeholder="Username (only contain letters,numbers)" onChange={(e) => setUsername(e.target.value)} />
         </div>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="password">New password :</Label>
-          <Input type="password" id="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+          <Label htmlFor="password">New password :  </Label>
+          <Input type="password" id="password" placeholder="Password (uppercase,lowercase,numbers,special characters)" onChange={(e) => setPassword(e.target.value)} />
         </div>
 
         <Button disabled={isSubmitting} onClick={onSubmit}>

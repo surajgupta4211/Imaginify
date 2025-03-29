@@ -95,7 +95,7 @@ const VideoUpload = () => {
 
         <div>
           <label className="label">
-            <span className="label-text">Video File (.mp4 or .avi)</span>
+            <span className="label-text">Video File (File Size Limit: 60MB , Allowed File Types: .mp4 or .avi )</span>
           </label>
           <input
             type="file"

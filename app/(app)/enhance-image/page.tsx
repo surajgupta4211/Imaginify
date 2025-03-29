@@ -85,7 +85,7 @@ const EnhanceImage = () => {
           <h2 className="card-title mb-4">Upload an Image</h2>
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Choose an image file</span>
+              <span className="label-text">Choose an image file (File Size Limit: 10MB , Allowed File Types: JPEG, PNG )</span>
             </label>
             <input
               type="file"
